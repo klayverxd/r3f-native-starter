@@ -1,0 +1,23 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "private": true,
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.19.3"
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.34.3",
+    "@react-three/fiber": "^8.8.9",
+    "expo": "^46.0.15",
+    "expo-gl": "~11.4.0",
+    "react": "18.0.0",
+    "react-native": "0.69.6",
+    "three": "^0.145.0"
+  }
+}
