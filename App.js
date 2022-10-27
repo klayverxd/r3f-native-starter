@@ -1,115 +1,76 @@
-import React, { Suspense, useEffect, useState } from 'react'
-import { useFrame, Canvas, useLoader } from '@react-three/fiber/native'
+import React, { Suspense, useEffect, useRef, useState } from 'react'
+import { Text, Button } from 'react-native'
+import { Canvas } from '@react-three/fiber/native'
 import { useAnimations, useGLTF, Environment } from '@react-three/drei/native'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-// import { AnimationMixer } from 'three'
 
-import * as THREE from 'three'
-// import path from './assets/iphone.glb'
-// import path from './assets/iphone/iphone.gltf'
-// import path from './assets/Lisa-sem-anim.glb'
-// import path from './assets/lisa-teste-5b/lisa-teste-5.glb'
-import path from './assets/Xbot.glb'
-// import path from './assets/Lisa-home.glb'
-// import path from './assets/lisa/lisa.gltf'
+import { animationsMock } from './animations'
+
+// import path from './assets/Xbot.glb'
+// import path from './assets/stacy/stacy.glb'
+import path from './assets/lisa-teste-5b/lisa-teste-5.glb'
+
+let ANIMATIONS = ''
+let ACTIONS = null
 
 export default function App() {
-  const [loader] = useState(new GLTFLoader())
-  const [scene] = useState(new THREE.Scene())
-  // const [animations, setAnimations] = useState(null)
-  // const [scene, setScene] = useState(null)
-  const [mixer, setMixer] = useState(null)
+  const [pressed, setPressed] = useState(false)
+  const [controle, setControle] = useState('NULL')
 
-  // const [camera] = useState(new THREE.PerspectiveCamera())
-  // const [renderer] = useState(new THREE.WebGLRenderer({ antialias: true }))
-  // const [clock] = useState(new THREE.Clock())
-
-  function loadIdleAnimation() {
-    const animation = animations.IDLE
-    const idleAnimation = {
-      ...animation,
-      tracks: JSON.parse(animation.tracks),
-    }
-
-    const clip = AnimationClip.parse(idleAnimation)
-    setIdleClip(clip)
-
-    if (mixer) {
-      mixer.clipAction(clip)
-    }
+  function AnimationController(props) {
+    // const { actions } = useAnimations(animationsMock, props.modelRef)
+    // useEffect(() => {
+    //   actions[0]?.reset().play()
+    // }, [actions])
+    // return null
   }
 
-  function Model({ url, ...rest }) {
-    loader.load(path, (gltf) => {
-      const model = gltf.scene
-      const mixer = new THREE.AnimationMixer(model)
-      model.position.set(0, -4.2, 0)
-      const clip = AnimationClip.findByName(gltf.animations, 'JANEIRO_dump')
+  function Model() {
+    const group = useRef(null)
+    const { nodes, scene, animations } = useGLTF(path)
+    const { ref, mixer, actions, names } = useAnimations(animations, group)
 
-      // const minimized = gltf.animations.map((animation) => {
-      //   const clip = AnimationClip.toJSON(animation);
-      //   const minimized = JSON.stringify(clip.tracks);
+    // for (const [p, val] of Object.entries(animations)) {
+    //   ANIMATIONS += `${p}: ${val}\n`
+    // }
+    ANIMATIONS = animations
+    ACTIONS = actions
 
-      //   return {
-      //     ...clip,
-      //     tracks: minimized
-      //   };
-      // });
-
-      // console.log(minimized);
-
-      loadIdleAnimation()
-      scene.add(model)
-
-      setMixer(mixer)
-    })
-    // const { scene, animations } = useGLTF(url)
-
-    // const { actions } = useAnimations(animations, scene)
-
-    // console.log({ actions })
-
-    // setAnimations(animations)
-    // setScene(scene)
-    // useFrame(() => (scene.rotation.y += 0.03))
-    // useFrame(() => (scene.rotation.x += 0.02))
-    return <primitive {...rest} object={scene} />
+    return (
+      <>
+        <group ref={group} position={[0, -5, 0]}>
+          <group rotation={[0, -0.4, 0]} scale={[1.3, 1.3, 1.3]}>
+            <primitive object={scene} />
+            {/* <meshStandardMaterial metalness={1} /> */}
+          </group>
+        </group>
+      </>
+    )
   }
 
-  // function lisaAnimation() {
-  //   function animate() {
-  //     if (mixer) mixer.update(Clock.getDelta() * animationSpeed)
-  //     renderer.render(scene, camera)
-  //   }
-
-  //   renderer.setAnimationLoop(animate)
-  // }
-
-  // useEffect(() => {
-  //   if (animations && scene) {
-  //     const mixer = new AnimationMixer(scene)
-  //     const clip = THREE.AnimationClip.findByName(animations, 'JANEIRO_dump')
-
-  //     const action = mixer.clipAction(clip)
-
-  //     action.play()
-  //   }
-  // }, [animations, scene])
-
-  // useEffect(() => {
-  //   lisaAnimation()
-  // }, [mixer])
+  useEffect(() => {
+    if (pressed) {
+      ACTIONS[Object.keys(ACTIONS)[0]]?.play()
+    }
+    // setControle(Object.keys(ACTIONS)[0])
+    // setControle(ANIMATIONS)
+    // setControle(ANIMATIONS[0]?.name)
+  }, [pressed])
 
   return (
-    <Canvas gl={{ physicallyCorrectLights: true }} camera={{ position: [-6, 0, 16], fov: 36 }}>
-      <color attach="background" args={[0xe2f4df]} />
-      <ambientLight />
-      <directionalLight intensity={1.1} position={[0.5, 0, 0.866]} />
-      <directionalLight intensity={0.8} position={[-6, 2, 2]} />
-      <Suspense>
-        <Environment preset="park" />
-        <Model url={path} />
-      </Suspense>
-    </Canvas>
+    <>
+      <Canvas gl={{ physicallyCorrectLights: true }} camera={{ position: [-6, 0, 16], fov: 36 }}>
+        <color attach="background" args={[0xd9e6ff]} />
+        <ambientLight />
+        <directionalLight intensity={1.1} position={[0.5, 0, 0.866]} />
+        <directionalLight intensity={0.8} position={[-6, 2, 2]} />
+        <Suspense>
+          <Environment preset="park" />
+          <Model url={path} />
+        </Suspense>
+      </Canvas>
+      {/* <Text>CONTROLE - {controle}</Text> */}
+      <Text>PRESSED - {pressed ? 'true' : 'false'}</Text>
+      <Button onPress={() => setPressed(!pressed)} title="ANIMATION" color="#3C7EFF" />
+    </>
   )
 }
