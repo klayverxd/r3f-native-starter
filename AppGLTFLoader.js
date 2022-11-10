@@ -4,54 +4,66 @@ import * as THREE from 'three'
 import { AnimationClip } from 'three'
 import { Canvas } from '@react-three/fiber/native'
 import { useAnimations, useGLTF, Environment } from '@react-three/drei/native'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 import Animations from './assets/animations'
 
-import path from './assets/lisa-teste-5b/lisa-teste-5.glb'
+import path from './assets/lisa-teste-5c.glb'
+// import path from 'https://cdn.leadfortaleza.com.br/assets/lisa/Lisa-home.glb'
 
 let ANIMATIONS = ''
 let ACTIONS = null
 let MIXER = null
 let CLIPS = null
-let GROUP = null
 
 export default function App() {
   const [pressed, setPressed] = useState(false)
   const [controle, setControle] = useState('NULL')
   // const [renderer] = useState(new THREE.WebGLRenderer({ antialias: true }));
-  // const [mixer, setMixer] = useState()
-  // const [loader] = useState(new GLTFLoader());
-  // const [scene] = useState(new THREE.Scene());
+  const [mixer, setMixer] = useState()
+  const [loader] = useState(new GLTFLoader())
+  const [scene] = useState(new THREE.Scene())
   // const [clips, setClips] = useState()
   // const [actions, setActions] = useState()
 
   function Model() {
-    const group = useRef(null)
-    const { scene, animations } = useGLTF(path)
-
+    // const group = useRef(null)
+    // const { scene, animations } = useGLTF(path)
     // const { mixer, actions, clips } = useAnimations(animations, group)
 
-    const mixer = new THREE.AnimationMixer(scene)
+    loader
+      .load(path, (gltf) => {
+        const model = gltf.scene
+        const mixer = new THREE.AnimationMixer(model)
+
+        scene.add(model)
+
+        setMixer(mixer)
+      })
+      .then(() => {
+        const group = useRef(null)
+        return (
+          <>
+            <group ref={group} position={[0, -5, 0]}>
+              <group rotation={[0, -0.4, 0]} scale={[1.3, 1.3, 1.3]}>
+                <primitive object={scene} />
+              </group>
+            </group>
+          </>
+        )
+      })
+
     // ACTIONS = actions
-    MIXER = mixer
-    GROUP = group
+    // MIXER = mixer
     // CLIPS = clips
     // const teste = AnimationClip.toJSON(animations[1])
 
     // console.log(JSON.stringify(teste))
-    return (
-      <>
-        <group position={[0, -5, 0]}>
-          <group rotation={[0, -0.4, 0]} scale={[1.3, 1.3, 1.3]}>
-            <primitive ref={group} object={scene} />
-          </group>
-        </group>
-      </>
-    )
   }
 
   function loadSceneActions(sceneGlosas) {
     if (MIXER) {
+      // let animationStartValue = MIXER.time
       const glosas = sceneGlosas.split(' ')
       const actions = []
       const clips = []
@@ -72,26 +84,9 @@ export default function App() {
       jsonTracksParsed.forEach((jsonTrack, index) => {
         const clip = THREE.AnimationClip.parse(jsonTrack)
 
-        const action = MIXER.clipAction(clip, GROUP)
+        const action = MIXER.clipAction(clip, 'c24de2b2-5170-43a2-b677-8ed2f573bcd9')
 
-        // action.startAt(1)
-        if (action.isRunning()) {
-          console.log('ANTES - running')
-        } else {
-          console.log('ANTES - not running')
-        }
-
-        // action.startAt(1)
-        action.setLoop(THREE.LoopRepeat, 2)
         action.play()
-
-        // console.log({ action })
-
-        if (action.isRunning()) {
-          console.log('DEPOIS - running')
-        } else {
-          console.log('DEPOIS - not running')
-        }
 
         // actions.push(action)
         // clips.push(clip)
@@ -103,11 +98,11 @@ export default function App() {
     }
   }
 
-  useEffect(() => {
-    if (pressed) {
-      ACTIONS[Object.keys(ACTIONS)[0]]?.play()
-    }
-  }, [pressed])
+  // useEffect(() => {
+  //   if (pressed) {
+  //     ACTIONS[Object.keys(ACTIONS)[0]]?.play()
+  //   }
+  // }, [pressed])
 
   return (
     <>
@@ -118,12 +113,12 @@ export default function App() {
         <directionalLight intensity={0.8} position={[-6, 2, 2]} />
         <Suspense>
           <Environment preset="park" />
-          <Model url={path} />
+          <Model />
         </Suspense>
       </Canvas>
-      {/* <Text>PRESSED - {pressed ? 'true' : 'false'}</Text> */}
-      {/* <Button onPress={() => setPressed(!pressed)} title="ANIMATION" color="#3C7EFF" /> */}
-      <Button onPress={() => loadSceneActions('FACULDADE')} title="FACULDADE" color="#3C7EFF" />
+      <Text>PRESSED - {pressed ? 'true' : 'false'}</Text>
+      <Button onPress={() => setPressed(!pressed)} title="ANIMATION" color="#3C7EFF" />
+      <Button onPress={() => loadSceneActions('A')} title="A" color="#3C7EFF" />
     </>
   )
 }

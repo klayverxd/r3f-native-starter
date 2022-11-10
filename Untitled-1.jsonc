@@ -1,0 +1,46 @@
+// === CLIPS ===
+// cria animação em JSON (faz as tracks)
+// capturar animações
+// métodos para manipulações de animações
+
+// === ACTIONS ===
+// vem do mixer (clipAction)
+
+// === TRACKS ===
+
+// === MIXER ===
+// conjunto de actions do modelo
+
+// STEPS
+// 1. pegar glosas
+// 2. criar animações do modelo com importação
+// 3. criar novo objeto com AnimationClip.toJSON(animations) e minimized tracks
+// 4. criar um index com as animations para centralizar
+// 5. pegar animation de acordo com a glosa
+// 6. criar um array com as animações e o parse das tracks da animação
+// 7. para todas as animações com mixer.stopAllAction()
+
+// 8.percorre cada track criado com um parse
+// 9. cria um array de animações e atualizando com reset
+// 10. se a action já existir no mixer, dá um reset para voltar o play
+// 11. se não existir, cria uma nova action com o mixer.clipAction(clip)
+
+[
+	{
+		"blendMode": 2500,
+		"duration": 2.366666555404663,
+		"name": "JANEIRO_dump",
+		"tracks": [{"createInterpolant": ["Function InterpolantFactoryMethodLinear"], "name": "DEF_Nose004.position", "times": 
+    [0.03333333507180214, 2.366666555404663], "values": [-1.5452221724387982e-9, 0.03550924360752106, 3.0797963290751795e-7, -1.5452221724387982e-9, 0.03550924360752106, 3.0797963290751795e-7]}],
+		"uuid": "26ce92d1-ff6b-41ab-9efb-a05f31a0c3e6"
+	},
+	{
+		"blendMode": 2500,
+		"duration": 2.366666555404663,
+		"name": "FACULDADE",
+		"tracks": [],
+		"uuid": "01e643fc-4da9-41ca-b9f1-a00361f3eda0"
+	}
+]
+
+{"_accuIndex": 0, "_actions": [], "_actionsByClip": {}, "_bindings": [], "_bindingsByRootAndName": {}, "_controlInterpolants": [], "_nActiveActions": 0, "_nActiveBindings": 0, "_nActiveControlInterpolants": 0, "_root": "undefined", "stats": {"actions": {"inUse": 0, "total": 0}, "bindings": {"inUse": 0, "total": 0}, "controlInterpolants": {"inUse": 0, "total": 0}}, "time": 0, "timeScale": 1}
